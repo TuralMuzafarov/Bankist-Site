@@ -44,4 +44,48 @@ document.querySelector('.nav__links').addEventListener('click', function (e){
     }
 });
 
+// Tabbed Component
+
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+// Button Animation
+// Event Delegation
+tabsContainer.addEventListener('click', function (e){
+  e.preventDefault();
+
+  const clickedButton = e.target.closest('.operations__tab');
+
+  if (!clickedButton) return;
+  console.log(clickedButton);
+
+  tabs.forEach(tab => tab.classList.remove('operations__tab--active'));
+  clickedButton.classList.add('operations__tab--active');
+
+  // Content Loading
+  tabsContent.forEach(tb => tb.classList.remove('operations__content--active'));
+  document.querySelector(`.operations__content--${clickedButton.dataset.tab}`).classList.add('operations__content--active');
+});
+
+//  Adding Hover Animation To The Nav Bar
+
+const nav = document.querySelector('.nav');
+const hoverOver = function(e){
+  if (e.target.classList.contains('nav__link')){
+    const clicked = e.target;
+
+    const siblings =[...clicked.closest('.nav').querySelectorAll('.nav__link')].filter(el => el !== clicked);
+    siblings.forEach(sib => sib.style.opacity = this);
+
+    const logo = clicked.closest('.nav').querySelector('img');
+    logo.style.opacity = this;
+  }
+}
+
+nav.addEventListener('mouseover', hoverOver.bind(0.5));
+nav.addEventListener('mouseout', hoverOver.bind(1));
+
+
+
 
