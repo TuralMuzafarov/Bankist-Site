@@ -86,6 +86,49 @@ const hoverOver = function(e){
 nav.addEventListener('mouseover', hoverOver.bind(0.5));
 nav.addEventListener('mouseout', hoverOver.bind(1));
 
+// const initialCoordinates = section1.getBoundingClientRect();
+// // Sticky navigation
+// window.addEventListener('scroll', function(e) {
+//   console.log(window.scrollY);
+//   if(window.scrollY > initialCoordinates.top) nav.classList.add('sticky');
+//   else nav.classList.remove('sticky');
+// });
 
+// Interception Observer API
+const header = document.querySelector('.header');
+const navHeight = nav.getBoundingClientRect().height;
+const stickyNav = function (entries){
+  const [entry]  = entries;
 
+  if(!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+}
 
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`
+});
+headerObserver.observe(header);
+
+// Revealing Sections On Scroll
+const allSections = document.querySelectorAll('.section');
+
+const revealSection = function (entries, observer){
+  const [entry] = entries;
+  console.log(entry);
+
+  if(!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
+}
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15
+});
+
+allSections.forEach(function(section) {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden')
+});
