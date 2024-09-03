@@ -2,7 +2,6 @@
 
 ///////////////////////////////////////
 // Modal window
-
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
@@ -129,13 +128,12 @@ const sectionObserver = new IntersectionObserver(revealSection, {
 
 allSections.forEach(function(section) {
   sectionObserver.observe(section);
-  section.classList.add('section--hidden')
+  // section.classList.add('section--hidden')
 });
 
 // LAZY LOADING IMAGES
 
 const imgTargets = document.querySelectorAll('img[data-src]');
-console.log(imgTargets)
 
 const loadImg = function (entries, observer){
   const [entry] = entries;
@@ -154,3 +152,85 @@ const imgObserver = new IntersectionObserver(loadImg, {
   threshold: 0
 });
 imgTargets.forEach(img => imgObserver.observe(img));
+
+// Slider Component
+
+const slides = document.querySelectorAll('.slide');
+const slider = document.querySelector('.slider');
+const dotContainer = document.querySelector('.dots');
+
+const dotsContainer = document.querySelector('.dots');
+slides.forEach((slide, index) => {
+  dotsContainer.insertAdjacentHTML('beforeend', `<button class="dots__dot" data-slide="${index}"></button>`);
+});
+
+dotContainer.addEventListener('click', function(e) {
+  if(e.target.classList.contains('dots__dot')){
+    console.log("DOTS");
+    goToPage(e.target.dataset.slide);
+  }
+});
+
+const makeActive = function(slide) {
+  document.querySelectorAll(".dots__dot").forEach(d => {
+    d.classList.remove('dots__dot--active');  
+  })
+  const dot = document.querySelector(`.dots__dot[data-slide="${slide}"]`);
+  dot.classList.add('dots__dot--active');
+}
+
+let currentSlide = 0;
+const maxSlide = slides.length;
+
+// slider.style.overflow = 'visible';
+// slider.style.transform = 'scale(0.3) translateX(-900px)'
+
+slides.forEach((s, i) => {
+  s.style.transform = `translateX(${100*i}%)`;
+})
+
+const leftBtn = document.querySelector('.slider__btn--left');
+const rightBtn = document.querySelector('.slider__btn--right');
+
+const goToPage = function (slide){
+  slides.forEach((s, i) => {
+    s.style.transform = `translateX(${100 * (i - slide)}%)`;
+  });
+  makeActive(slide);
+}
+
+const previousSlide = function() {
+  if(currentSlide === 0){
+    currentSlide = maxSlide - 1;
+  }else{
+    currentSlide--;
+  }
+  goToPage(currentSlide);
+};
+
+const nextSlide = function() {
+  if(currentSlide === maxSlide - 1){
+    currentSlide = 0;
+  }else{
+    currentSlide ++;
+  }
+  goToPage(currentSlide);
+}
+leftBtn.addEventListener('click',previousSlide);
+rightBtn.addEventListener('click', nextSlide);
+
+document.addEventListener('keydown', function(e) {
+  console.log(e);
+  if(e.key === 'ArrowRight'){
+    nextSlide();
+  }
+
+  if(e.key === 'ArrowLeft'){
+    previousSlide();
+  }
+});
+
+
+
+
+
